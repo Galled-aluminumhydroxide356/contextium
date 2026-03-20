@@ -110,6 +110,7 @@ init() {
   echo -e "${DIM}so it knows how to navigate your Contextium from the first session.${NC}"
   AI_AGENT=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[x] " \
     "Claude Code (recommended)" \
+    "Gemini CLI" \
     "Codex CLI" \
     "Cursor" \
     "Windsurf" \
@@ -137,8 +138,10 @@ init() {
     INTEGRATION_ITEMS+=("Codex (delegate bulk edits to a second AI agent)")
     PRESELECTED+=("--selected=Codex (delegate bulk edits to a second AI agent)")
   fi
-  INTEGRATION_ITEMS+=("Gemini (delegate web research to Google's AI)")
-  PRESELECTED+=("--selected=Gemini (delegate web research to Google's AI)")
+  if [[ "$AI_AGENT" != "Gemini"* ]]; then
+    INTEGRATION_ITEMS+=("Gemini (delegate web research to Google's AI)")
+    PRESELECTED+=("--selected=Gemini (delegate web research to Google's AI)")
+  fi
   INTEGRATION_ITEMS+=("Browse (browser automation for web scraping and testing)")
 
   # Productivity
@@ -252,34 +255,54 @@ init() {
   git init -q
   git branch -m main 2>/dev/null || true
 
-  # Copy agent config based on selection
-  # Claude Code has a full config; others use Claude's as a base since most read CLAUDE.md
+  # Copy agent config to the correct filename for the selected agent
+  # The content is the same core instruction set — context router, rules, structure —
+  # but each agent reads from a different filename.
+  INSTRUCTION_SRC="agent-configs/claude/CLAUDE.md"
+
   case "$AI_AGENT" in
     "Claude Code"*)
-      cp agent-configs/claude/CLAUDE.md ./CLAUDE.md
-      cp agent-configs/claude/AGENTS.md ./AGENTS.md 2>/dev/null || true
-      cp agent-configs/claude/GEMINI.md ./GEMINI.md 2>/dev/null || true
-      echo -e "  ${GREEN}✓${NC} Claude Code config installed"
+      cp "$INSTRUCTION_SRC" ./CLAUDE.md
+      echo -e "  ${GREEN}✓${NC} Installed → CLAUDE.md"
+      ;;
+    "Gemini"*)
+      cp "$INSTRUCTION_SRC" ./GEMINI.md
+      echo -e "  ${GREEN}✓${NC} Installed → GEMINI.md"
       ;;
     "Codex"*)
-      cp agent-configs/claude/CLAUDE.md ./CLAUDE.md 2>/dev/null || true
-      if [ -f agent-configs/codex/AGENTS.md ]; then
-        cp agent-configs/codex/AGENTS.md ./AGENTS.md
-      fi
-      echo -e "  ${GREEN}✓${NC} Codex config installed"
+      cp "$INSTRUCTION_SRC" ./AGENTS.md
+      echo -e "  ${GREEN}✓${NC} Installed → AGENTS.md"
       ;;
     "Cursor"*)
-      cp agent-configs/claude/CLAUDE.md ./CLAUDE.md 2>/dev/null || true
-      if [ -f agent-configs/cursor/.cursorrules ]; then
-        cp agent-configs/cursor/.cursorrules ./.cursorrules
-      fi
-      echo -e "  ${GREEN}✓${NC} Cursor config installed"
+      cp "$INSTRUCTION_SRC" ./.cursorrules
+      echo -e "  ${GREEN}✓${NC} Installed → .cursorrules"
       ;;
-    "Cline"*|"Aider"*|"Continue"*|"Windsurf"*|"GitHub Copilot"*|"Other"*)
-      # These agents generally read CLAUDE.md or similar instruction files
-      cp agent-configs/claude/CLAUDE.md ./CLAUDE.md 2>/dev/null || true
-      echo -e "  ${GREEN}✓${NC} Config installed (using CLAUDE.md — most agents read this)"
-      echo -e "  ${DIM}Community-contributed configs for ${AI_AGENT} welcome! See CONTRIBUTING.md${NC}"
+    "Windsurf"*)
+      cp "$INSTRUCTION_SRC" ./.windsurfrules
+      echo -e "  ${GREEN}✓${NC} Installed → .windsurfrules"
+      ;;
+    "Cline"*)
+      cp "$INSTRUCTION_SRC" ./.clinerules
+      echo -e "  ${GREEN}✓${NC} Installed → .clinerules"
+      ;;
+    "Aider"*)
+      cp "$INSTRUCTION_SRC" ./CONVENTIONS.md
+      echo -e "  ${GREEN}✓${NC} Installed → CONVENTIONS.md"
+      ;;
+    "Continue"*)
+      mkdir -p .continue
+      cp "$INSTRUCTION_SRC" ./.continue/rules
+      echo -e "  ${GREEN}✓${NC} Installed → .continue/rules"
+      ;;
+    "GitHub Copilot"*)
+      mkdir -p .github
+      cp "$INSTRUCTION_SRC" ./.github/copilot-instructions.md
+      echo -e "  ${GREEN}✓${NC} Installed → .github/copilot-instructions.md"
+      ;;
+    "Other"*)
+      cp "$INSTRUCTION_SRC" ./CLAUDE.md
+      echo -e "  ${GREEN}✓${NC} Installed → CLAUDE.md (universal default)"
+      echo -e "  ${DIM}Rename to match your agent's instruction file format if needed.${NC}"
       ;;
   esac
 
@@ -449,6 +472,17 @@ DOMAIN_EOF
           echo -e "  ${YELLOW}Could not auto-install. Run: npm install -g @anthropic-ai/claude-code${NC}"
       else
         echo -e "  ${GREEN}✓${NC} Claude Code already installed"
+      fi
+      ;;
+    "Gemini"*)
+      AGENT_CMD="gemini"
+      if ! command -v gemini &>/dev/null; then
+        echo -e "  ${DIM}Installing Gemini CLI...${NC}"
+        npm install -g @anthropic-ai/gemini-cli 2>/dev/null && \
+          echo -e "  ${GREEN}✓${NC} Gemini CLI installed" || \
+          echo -e "  ${YELLOW}Could not auto-install. Run: npm install -g @anthropic-ai/gemini-cli${NC}"
+      else
+        echo -e "  ${GREEN}✓${NC} Gemini CLI already installed"
       fi
       ;;
     "Codex"*)
