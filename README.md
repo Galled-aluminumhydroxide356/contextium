@@ -1,10 +1,14 @@
 <div align="center">
 
-# Contextium
+<img src="docs/images/logo.svg" alt="Contextium" width="520" />
+
+<br/><br/>
 
 ### AI that doesn't learn isn't intelligence.
 
 **Give your AI an operating system.**
+
+<br/>
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](CHANGELOG.md)
