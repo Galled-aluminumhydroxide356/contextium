@@ -50,7 +50,7 @@ ensure_gum() {
       sudo mkdir -p /etc/apt/keyrings
       curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg 2>/dev/null
       echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list >/dev/null
-      sudo apt-get update -qq && sudo apt-get install -y -qq gum >/dev/null 2>&1
+      sudo apt-get update -qq -o Dir::Etc::sourcelist="sources.list.d/charm.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" && sudo apt-get install -y -qq gum >/dev/null 2>&1
     elif command -v yum &>/dev/null; then
       echo '[charm]
 name=Charm
