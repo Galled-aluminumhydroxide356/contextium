@@ -43,6 +43,9 @@ The more you use it, the richer the context becomes. Your AI learns your goals, 
 | **Multi-Agent Delegation** | Routes work to the right AI: Claude for strategy, Gemini for research, Codex for bulk edits |
 | **Session Compounding** | Journal entries + git history = every session builds on every previous session |
 | **You Own Your Context** | Plain markdown on your machine — switch AI agents, change providers, or leave entirely. Your accumulated intelligence stays with you, forever |
+| **Your AI Actually Knows You** | After a month, your AI knows your goals, relationships, decisions, and communication style. Not a generic assistant — *your* assistant |
+| **Audit Trail** | Every decision is git-versioned. `git log` any choice from 6 months ago — what you decided, what you rejected, and why |
+| **Cost-Aware Delegation** | Claude for strategy, Gemini for research, Codex for bulk edits — each at the right cost. More leverage, less spend |
 | **One-Command Setup** | The installer handles everything — name, AI agent, integrations, CLI install, and launches your first session |
 
 ## Quick Start
@@ -198,6 +201,8 @@ Every pattern in this repo was refined through sustained daily use — not theor
 **Delegation over monolith.** One AI can't do everything efficiently. Route research to Gemini, bulk edits to Codex, strategy to Claude. Each agent gets the right task at the right cost.
 
 **You own your context.** Every other AI tool locks your accumulated context inside their platform. If they change pricing, shut down, or you just want to switch — you lose everything. Contextium is plain markdown on your machine. Switch from Claude to Gemini tomorrow. Your context, your decisions, your knowledge — all of it comes with you.
+
+**Institutional memory for individuals.** Companies have wikis, CRMs, and project management tools. Individuals have nothing. Your career knowledge, health decisions, financial strategy, relationship context — it all lives in your head until you forget it. Contextium is the institutional memory you never had.
 
 **Sessions compound.** Every journal entry, every project README, every people card makes the next session richer. This is the flywheel.
 
