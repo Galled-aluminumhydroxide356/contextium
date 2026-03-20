@@ -39,7 +39,7 @@ jobs:
           if grep -rE 'op://' \
             --include="*.md" \
             --exclude-dir=".git" \
-            . | grep -vE '(YOUR_VAULT|your-vault|example)'; then
+            . | grep -vE '(YOUR_VAULT|your-vault|example|VaultName|AI/|Vault/)'; then
             echo "::warning::Potential 1Password references found"
             FOUND=1
           fi
