@@ -43,15 +43,15 @@ The more you use it, the richer the context becomes. Your AI learns your goals, 
 | **Multi-Agent Delegation** | Routes work to the right AI: Claude for strategy, Gemini for research, Codex for bulk edits |
 | **Session Compounding** | Journal entries + git history = every session builds on every previous session |
 | **No Vendor Lock-In** | Plain markdown in a git repo — switch AI agents tomorrow and lose nothing |
-| **5-Minute Onboarding** | Clone, start your AI, say "let's onboard" — running in minutes, not hours |
+| **One-Command Setup** | The installer handles everything — name, AI agent, integrations, CLI install, and launches your first session |
 
 ## Quick Start
 
 ```bash
-curl -sSL https://contextium.ai/install.sh | bash
+curl -sSL contextium.ai/install | bash
 ```
 
-The installer walks you through setup: your name, AI agent, and which integrations to include. Then open your AI and say **"let's onboard"** — 5 minutes to a fully configured system.
+That's it. The installer walks you through everything: your name, your AI agent, which integrations to include — then installs your agent's CLI and opens it in your new Contextium. You'll be onboarding in under a minute.
 
 For deeper configuration after onboarding, check the pre-loaded projects in `projects/setup/`.
 

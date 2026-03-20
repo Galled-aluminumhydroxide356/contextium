@@ -292,23 +292,62 @@ PROFILE_EOF
     fi
   fi
 
-  # Done
+  # Install AI agent CLI
   echo ""
-  echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${GREEN}  Contextium is ready.${NC}"
-  echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo ""
-  echo -e "  ${BOLD}cd ${DIR_NAME}${NC}"
+  echo -e "${BLUE}Setting up your AI agent...${NC}"
+  AGENT_CMD=""
   case "$AI_AGENT" in
-    "Claude Code"*) echo -e "  ${BOLD}claude${NC}" ;;
-    "Cursor"*)      echo -e "  ${BOLD}cursor .${NC}" ;;
-    "Codex"*)       echo -e "  ${BOLD}codex${NC}" ;;
+    "Claude Code"*)
+      AGENT_CMD="claude"
+      if ! command -v claude &>/dev/null; then
+        echo -e "  ${DIM}Installing Claude Code CLI...${NC}"
+        npm install -g @anthropic-ai/claude-code 2>/dev/null && \
+          echo -e "  ${GREEN}✓${NC} Claude Code installed" || \
+          echo -e "  ${YELLOW}Could not auto-install. Install manually: npm install -g @anthropic-ai/claude-code${NC}"
+      else
+        echo -e "  ${GREEN}✓${NC} Claude Code already installed"
+      fi
+      ;;
+    "Cursor"*)
+      AGENT_CMD="cursor"
+      if ! command -v cursor &>/dev/null; then
+        echo -e "  ${YELLOW}Cursor is a desktop app — download from https://cursor.com if you haven't already.${NC}"
+      else
+        echo -e "  ${GREEN}✓${NC} Cursor already installed"
+      fi
+      AGENT_CMD="cursor ."
+      ;;
+    "Codex"*)
+      AGENT_CMD="codex"
+      if ! command -v codex &>/dev/null; then
+        echo -e "  ${DIM}Installing Codex CLI...${NC}"
+        npm install -g @openai/codex 2>/dev/null && \
+          echo -e "  ${GREEN}✓${NC} Codex installed" || \
+          echo -e "  ${YELLOW}Could not auto-install. Install manually: npm install -g @openai/codex${NC}"
+      else
+        echo -e "  ${GREEN}✓${NC} Codex already installed"
+      fi
+      ;;
   esac
-  echo -e "  ${DIM}Say: \"let's onboard\"${NC}"
+
+  # Done — launch agent
   echo ""
-  echo -e "  Your AI will finish the setup — communication style,"
-  echo -e "  professional context, and your first knowledge domain."
+  echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${GREEN}  Contextium is ready. Launching your AI...${NC}"
+  echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
   echo ""
+
+  # Launch the AI agent in the new directory
+  if command -v ${AGENT_CMD%% *} &>/dev/null; then
+    exec $AGENT_CMD
+  else
+    echo -e "  Your AI agent isn't installed yet. Once installed, run:"
+    echo ""
+    echo -e "  ${BOLD}cd ${DIR_NAME}${NC}"
+    echo -e "  ${BOLD}${AGENT_CMD}${NC}"
+    echo -e "  ${DIM}It will walk you through the rest of the setup.${NC}"
+    echo ""
+  fi
 }
 
 # --- Update (existing install) ---
