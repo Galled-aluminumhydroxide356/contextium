@@ -592,9 +592,14 @@ open('integrations/README.md', 'w').writelines(out)
       REPO_NAME="${REPO_NAME:-$DEFAULT_REPO}"
       echo ""
       echo -e "${BLUE}Creating private GitHub repo...${NC}"
-      gh repo create "${GITHUB_USER}/${REPO_NAME}" --private --source=. --push 2>/dev/null && \
-        echo -e "  ${GREEN}✓${NC} Pushed to github.com/${GITHUB_USER}/${REPO_NAME} (private)" || \
-        echo -e "  ${YELLOW}Could not create repo. You can do this later with: gh repo create${NC}"
+      GH_OUTPUT=$(gh repo create "${GITHUB_USER}/${REPO_NAME}" --private --source=. --push 2>&1) && \
+        echo -e "  ${GREEN}✓${NC} Pushed to github.com/${GITHUB_USER}/${REPO_NAME} (private)" || {
+        echo -e "  ${YELLOW}Could not create repo:${NC}"
+        echo -e "  ${DIM}${GH_OUTPUT}${NC}"
+        echo ""
+        echo -e "  ${DIM}You can do this later:${NC}"
+        echo -e "  ${BOLD}cd $(pwd) && gh repo create ${REPO_NAME} --private --source=. --push${NC}"
+      }
     fi
   fi
 
