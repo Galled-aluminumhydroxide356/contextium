@@ -17,15 +17,15 @@ Personal finance tracking via Monarch Money for account balances, transactions, 
 2. Store your Monarch credentials in your vault:
    ```bash
    op item create --category=login --title="Monarch Money" \
-     --vault="Finance" username="your@email.com" password="your-password"
+     --vault="Finance" username="you@example.com" password="your-password"
    ```
 3. Authenticate and get a session token:
    ```python
    from monarchmoney import MonarchMoney
    mm = MonarchMoney()
-   await mm.login("your@email.com", "your-password")
+   await mm.login("you@example.com", "your-password")
    # If MFA is enabled:
-   await mm.login("your@email.com", "your-password", mfa_code="123456")
+   await mm.login("you@example.com", "your-password", mfa_code="123456")
    ```
 4. Store the session token in your vault for reuse (avoids repeated MFA prompts)
 
