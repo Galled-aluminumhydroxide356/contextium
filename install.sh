@@ -119,8 +119,8 @@ init() {
   # Step 2: Directory
   echo -e "${BOLD}Where should we set up your Contextium?${NC}"
   echo -e "${DIM}Everything lives in one folder — your AI reads and writes here across sessions.${NC}"
-  DIR_NAME=$(gum input --placeholder "contextium" --value "contextium" --width 40)
-  DIR_NAME="${DIR_NAME:-contextium}"
+  DIR_NAME=$(gum input --placeholder "my-context" --value "my-context" --width 40)
+  DIR_NAME="${DIR_NAME:-my-context}"
   if [ -d "$DIR_NAME" ]; then
     echo -e "${YELLOW}Directory '$DIR_NAME' already exists. Use './install.sh update' inside it to update.${NC}"
     exit 1
@@ -586,10 +586,15 @@ open('integrations/README.md', 'w').writelines(out)
   # Create private GitHub repo if requested
   if [[ "$CREATE_REPO" == "Yes"* ]]; then
     echo ""
-    echo -e "${BLUE}Creating private GitHub repo...${NC}"
     GITHUB_USER=$(gh api user --jq '.login' 2>/dev/null || echo "")
     if [ -n "$GITHUB_USER" ]; then
-      REPO_NAME=$(basename "$(pwd)")
+      DEFAULT_REPO=$(basename "$(pwd)")
+      echo -e "${BOLD}What should the GitHub repo be called?${NC}"
+      echo -e "${DIM}This will be private at github.com/${GITHUB_USER}/...${NC}"
+      REPO_NAME=$(gum input --placeholder "$DEFAULT_REPO" --value "$DEFAULT_REPO" --width 40)
+      REPO_NAME="${REPO_NAME:-$DEFAULT_REPO}"
+      echo ""
+      echo -e "${BLUE}Creating private GitHub repo...${NC}"
       gh repo create "${GITHUB_USER}/${REPO_NAME}" --private --source=. --push 2>/dev/null && \
         echo -e "  ${GREEN}✓${NC} Pushed to github.com/${GITHUB_USER}/${REPO_NAME} (private)" || \
         echo -e "  ${YELLOW}Could not create repo. You can do this later with: gh repo create${NC}"
