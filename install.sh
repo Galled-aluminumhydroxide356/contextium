@@ -145,74 +145,109 @@ init() {
   echo -e "${DIM}Selected: ${AI_AGENT}${NC}"
   echo ""
 
-  # Step 4: Integrations
-  echo -e "${BOLD}Which tools and services do you already use?${NC}"
-  echo -e "${DIM}Your AI can connect to these to pull data, trigger actions, and automate${NC}"
-  echo -e "${DIM}workflows. We'll only install what you pick — keeps your repo clean.${NC}"
-  echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
-  echo ""
+  # Step 4: Integrations (sectioned by category)
+  INTEGRATIONS=""
 
-  # Build integration list dynamically — exclude the primary agent they already picked
-  INTEGRATION_ITEMS=()
-  PRESELECTED=()
-
-  # AI delegation tools (skip if already primary agent)
+  # 4a: AI delegation
+  AI_ITEMS=()
+  AI_PRESELECTED=()
   if [[ "$AI_AGENT" != "Codex"* ]]; then
-    INTEGRATION_ITEMS+=("Codex (delegate bulk edits to a second AI agent)")
-    PRESELECTED+=("--selected=Codex (delegate bulk edits to a second AI agent)")
+    AI_ITEMS+=("Codex (delegate bulk edits to a second AI agent)")
+    AI_PRESELECTED+=("--selected=Codex (delegate bulk edits to a second AI agent)")
   fi
   if [[ "$AI_AGENT" != "Gemini"* ]]; then
-    INTEGRATION_ITEMS+=("Gemini (delegate web research to Google's AI)")
-    PRESELECTED+=("--selected=Gemini (delegate web research to Google's AI)")
+    AI_ITEMS+=("Gemini (delegate web research to Google's AI)")
+    AI_PRESELECTED+=("--selected=Gemini (delegate web research to Google's AI)")
   fi
-  INTEGRATION_ITEMS+=("Browse (browser automation for web scraping and testing)")
+  AI_ITEMS+=("Browse (browser automation for web scraping and testing)")
 
-  # Productivity
-  INTEGRATION_ITEMS+=(
-    "1Password (store API keys and credentials securely)"
-    "Google Workspace (Gmail, Calendar, Drive, Sheets)"
-    "Todoist (task management and to-do tracking)"
-  )
+  if [ ${#AI_ITEMS[@]} -gt 0 ]; then
+    echo -e "${BOLD}Want to delegate tasks to other AI agents?${NC}"
+    echo -e "${DIM}Your primary AI can route work to cheaper/specialized agents —${NC}"
+    echo -e "${DIM}research to Gemini, bulk edits to Codex. Saves tokens and money.${NC}"
+    echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
+    echo ""
+    AI_SELECTED=$(gum choose --no-limit --cursor-prefix "[ ] " --selected-prefix "[x] " \
+      "${AI_PRESELECTED[@]}" \
+      "${AI_ITEMS[@]}" \
+      || echo "")
+    INTEGRATIONS="${INTEGRATIONS}${AI_SELECTED}"$'\n'
+    echo ""
+  fi
 
-  # Automation
-  INTEGRATION_ITEMS+=(
-    "Windmill (self-hosted workflow automation — like Zapier but yours)"
-    "n8n (self-hosted workflow automation — alternative to Windmill)"
-  )
-
-  # Infrastructure
-  INTEGRATION_ITEMS+=(
-    "Cloudflare (DNS, web hosting, serverless functions)"
-    "TrueNAS (NAS and Docker container management via SSH)"
-    "Garage (S3-compatible object storage for backups)"
-  )
-
-  # Smart Home
-  INTEGRATION_ITEMS+=("Home Assistant (smart home control and automation)")
-
-  # Business
-  INTEGRATION_ITEMS+=(
-    "Autotask (PSA/ticketing for managed service providers)"
-    "NinjaOne (device inventory and remote monitoring)"
-    "QuickBooks Online (business accounting and financial reports)"
-    "Monarch (personal finance tracking and budgeting)"
-    "Strety (EOS platform — scorecards, rocks, meeting management)"
-    "Hudu (IT documentation platform)"
-    "MSPBots (MSP-specific analytics and KPI dashboards)"
-  )
-
-  # Interfaces
-  INTEGRATION_ITEMS+=(
-    "TRMNL (e-ink display dashboard for at-a-glance info)"
-    "Remote Control (access your AI from your phone)"
-    "HAPI (voice interface — talk to your AI)"
-    "VS Code (remote development tunnel)"
-  )
-
-  INTEGRATIONS=$(gum choose --no-limit --height 20 --cursor-prefix "[ ] " --selected-prefix "[x] " \
-    "${PRESELECTED[@]}" \
-    "${INTEGRATION_ITEMS[@]}" \
+  # 4b: Productivity
+  echo -e "${BOLD}Which productivity tools do you use?${NC}"
+  echo -e "${DIM}Your AI can read your calendar, manage tasks, and access files —${NC}"
+  echo -e "${DIM}so it has context about your schedule and priorities.${NC}"
+  echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
+  echo ""
+  PROD_SELECTED=$(gum choose --no-limit --cursor-prefix "[ ] " --selected-prefix "[x] " \
+    "1Password (store API keys and credentials securely)" \
+    "Google Workspace (Gmail, Calendar, Drive, Sheets)" \
+    "Todoist (task management and to-do tracking)" \
     || echo "")
+  INTEGRATIONS="${INTEGRATIONS}${PROD_SELECTED}"$'\n'
+  echo ""
+
+  # 4c: Automation
+  echo -e "${BOLD}Do you want to automate recurring tasks?${NC}"
+  echo -e "${DIM}Automation platforms let your AI schedule workflows —${NC}"
+  echo -e "${DIM}morning briefings, data syncs, alerts — that run without you.${NC}"
+  echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
+  echo ""
+  AUTO_SELECTED=$(gum choose --no-limit --cursor-prefix "[ ] " --selected-prefix "[x] " \
+    "Windmill (self-hosted workflow automation — like Zapier but yours)" \
+    "n8n (self-hosted workflow automation — alternative to Windmill)" \
+    || echo "")
+  INTEGRATIONS="${INTEGRATIONS}${AUTO_SELECTED}"$'\n'
+  echo ""
+
+  # 4d: Infrastructure
+  echo -e "${BOLD}Do you self-host or manage infrastructure?${NC}"
+  echo -e "${DIM}If you run servers, a NAS, or manage DNS — your AI can${NC}"
+  echo -e "${DIM}monitor, deploy, and troubleshoot alongside you.${NC}"
+  echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
+  echo ""
+  INFRA_SELECTED=$(gum choose --no-limit --cursor-prefix "[ ] " --selected-prefix "[x] " \
+    "Cloudflare (DNS, web hosting, serverless functions)" \
+    "TrueNAS (NAS and Docker container management via SSH)" \
+    "Garage (S3-compatible object storage for backups)" \
+    "Home Assistant (smart home control and automation)" \
+    || echo "")
+  INTEGRATIONS="${INTEGRATIONS}${INFRA_SELECTED}"$'\n'
+  echo ""
+
+  # 4e: Business tools
+  echo -e "${BOLD}Do you use any business or finance tools?${NC}"
+  echo -e "${DIM}Your AI can pull reports, track KPIs, and manage tickets —${NC}"
+  echo -e "${DIM}skip these if you don't run a business.${NC}"
+  echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
+  echo ""
+  BIZ_SELECTED=$(gum choose --no-limit --cursor-prefix "[ ] " --selected-prefix "[x] " \
+    "QuickBooks Online (business accounting and financial reports)" \
+    "Monarch (personal finance tracking and budgeting)" \
+    "Autotask (PSA/ticketing for managed service providers)" \
+    "NinjaOne (device inventory and remote monitoring)" \
+    "Strety (EOS platform — scorecards, rocks, meeting management)" \
+    "Hudu (IT documentation platform)" \
+    "MSPBots (MSP-specific analytics and KPI dashboards)" \
+    || echo "")
+  INTEGRATIONS="${INTEGRATIONS}${BIZ_SELECTED}"$'\n'
+  echo ""
+
+  # 4f: Interfaces
+  echo -e "${BOLD}Want additional ways to access your AI?${NC}"
+  echo -e "${DIM}Beyond your terminal — e-ink dashboards, voice control,${NC}"
+  echo -e "${DIM}mobile access, or remote development.${NC}"
+  echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
+  echo ""
+  IFACE_SELECTED=$(gum choose --no-limit --cursor-prefix "[ ] " --selected-prefix "[x] " \
+    "TRMNL (e-ink display dashboard for at-a-glance info)" \
+    "Remote Control (access your AI from your phone)" \
+    "HAPI (voice interface — talk to your AI)" \
+    "VS Code (remote development tunnel)" \
+    || echo "")
+  INTEGRATIONS="${INTEGRATIONS}${IFACE_SELECTED}"
   echo ""
 
   # Step 5: Communication style
@@ -237,9 +272,9 @@ init() {
   echo ""
 
   # Step 8: First knowledge domain
-  echo -e "${BOLD}What's one area of your life you want persistent context about?${NC}"
-  echo -e "${DIM}Your AI will create a knowledge directory for this — a place to accumulate${NC}"
-  echo -e "${DIM}facts, decisions, and history that carry across every session.${NC}"
+  echo -e "${BOLD}Pick a knowledge domain to start with.${NC}"
+  echo -e "${DIM}This is just your first one — more will naturally appear as you work.${NC}"
+  echo -e "${DIM}Your AI creates knowledge directories on demand, so don't overthink this.${NC}"
   FIRST_DOMAIN=$(gum choose \
     "work — professional projects, clients, strategy" \
     "health — biomarkers, supplements, fitness" \
@@ -328,6 +363,15 @@ init() {
       echo -e "  ${DIM}Rename to match your agent's instruction file format if needed.${NC}"
       ;;
   esac
+
+  # Clean up agent-configs (the right file is already at root)
+  rm -rf agent-configs
+  echo -e "  ${GREEN}✓${NC} Cleaned up agent templates"
+
+  # Also remove the starter CLAUDE.md if a different agent was selected
+  if [[ "$AI_AGENT" != "Claude Code"* && "$AI_AGENT" != "Other"* ]]; then
+    rm -f CLAUDE.md
+  fi
 
   # Map integration display names to directory names
   declare -A INTEGRATION_MAP=(
