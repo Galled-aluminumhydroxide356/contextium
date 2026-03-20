@@ -48,7 +48,7 @@ ensure_gum() {
   elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v apt-get &>/dev/null; then
       sudo mkdir -p /etc/apt/keyrings
-      curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg 2>/dev/null
+      curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --batch --yes --dearmor -o /etc/apt/keyrings/charm.gpg 2>/dev/null
       echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list >/dev/null
       sudo apt-get update -qq -o Dir::Etc::sourcelist="sources.list.d/charm.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" && sudo apt-get install -y -qq gum >/dev/null 2>&1
     elif command -v yum &>/dev/null; then
