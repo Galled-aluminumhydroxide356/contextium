@@ -151,7 +151,46 @@ init() {
     || echo "")
   echo ""
 
-  # Step 5: Private GitHub repo
+  # Step 5: Communication style
+  echo -e "${BOLD}How should your AI communicate with you?${NC}"
+  echo -e "${DIM}This shapes every interaction — your AI will match your style from day one.${NC}"
+  COMM_STYLE=$(gum choose \
+    "Concise — get to the point, no filler" \
+    "Balanced — brief but include reasoning" \
+    "Thorough — explain your thinking, show alternatives")
+  echo ""
+
+  # Step 6: Professional context
+  echo -e "${BOLD}What do you do? (one line is fine)${NC}"
+  echo -e "${DIM}So your AI understands your professional context and can give relevant advice.${NC}"
+  PROFESSION=$(gum input --placeholder "e.g. Software engineer at a startup, MSP owner, freelance designer...")
+  echo ""
+
+  # Step 7: Primary AI goal
+  echo -e "${BOLD}What's the #1 thing you want AI to help with?${NC}"
+  echo -e "${DIM}This becomes your AI's north star — it'll prioritize suggestions around this.${NC}"
+  AI_GOAL=$(gum input --placeholder "e.g. Ship code faster, manage my business, organize my life...")
+  echo ""
+
+  # Step 8: First knowledge domain
+  echo -e "${BOLD}What's one area of your life you want persistent context about?${NC}"
+  echo -e "${DIM}Your AI will create a knowledge directory for this — a place to accumulate${NC}"
+  echo -e "${DIM}facts, decisions, and history that carry across every session.${NC}"
+  FIRST_DOMAIN=$(gum choose \
+    "work — professional projects, clients, strategy" \
+    "health — biomarkers, supplements, fitness" \
+    "finance — budgets, investments, tax planning" \
+    "growth — goals, learning, personal development" \
+    "home — property, vehicles, maintenance" \
+    "Other (I'll type it)")
+  if [[ "$FIRST_DOMAIN" == "Other"* ]]; then
+    FIRST_DOMAIN=$(gum input --placeholder "e.g. recipes, gaming, music, legal...")
+  else
+    FIRST_DOMAIN="${FIRST_DOMAIN%% —*}"
+  fi
+  echo ""
+
+  # Step 9: Private GitHub repo
   CREATE_REPO="no"
   if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
     echo -e "${BOLD}Want to back up your Contextium to GitHub?${NC}"
@@ -260,12 +299,69 @@ init() {
 
 ## About
 
-*Fill this in during onboarding or as context develops.*
-PROFILE_EOF
+${PROFESSION}
 
-  # Update preferences placeholder with name
-  sed -i "s/# User Preferences/# User Preferences — ${USER_NAME}/" preferences/user/preferences.md 2>/dev/null || true
+## AI Goal
+
+${AI_GOAL}
+PROFILE_EOF
   echo -e "  ${GREEN}✓${NC} Profile created for ${USER_NAME}"
+
+  # Write full preferences file
+  COMM_SHORT=""
+  case "$COMM_STYLE" in
+    "Concise"*)  COMM_SHORT="concise" ;;
+    "Balanced"*) COMM_SHORT="balanced" ;;
+    "Thorough"*) COMM_SHORT="thorough" ;;
+  esac
+  cat > preferences/user/preferences.md << PREFS_EOF
+# User Preferences — ${USER_NAME}
+
+## Communication
+
+$(case "$COMM_SHORT" in
+  concise)
+    echo "- **Concise over verbose** — get to the point"
+    echo "- **Direct over diplomatic** — say what you mean"
+    echo "- **Practical over theoretical** — focus on what works"
+    ;;
+  balanced)
+    echo "- **Brief but reasoned** — include the why, skip the filler"
+    echo "- **Direct but thoughtful** — explain trade-offs when relevant"
+    echo "- **Practical first** — theory only when it informs action"
+    ;;
+  thorough)
+    echo "- **Thorough explanations** — show your reasoning"
+    echo "- **Present alternatives** — help me think through options"
+    echo "- **Context-rich** — include background when it helps"
+    ;;
+esac)
+
+## Professional Context
+
+${PROFESSION}
+
+## Primary Goal with AI
+
+${AI_GOAL}
+
+## Working Style
+
+*Update this as your AI learns how you work best.*
+PREFS_EOF
+  echo -e "  ${GREEN}✓${NC} Preferences configured (${COMM_SHORT} communication)"
+
+  # Create first knowledge domain
+  DOMAIN_LOWER=$(echo "$FIRST_DOMAIN" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+  mkdir -p "knowledge/${DOMAIN_LOWER}"
+  cat > "knowledge/${DOMAIN_LOWER}/README.md" << DOMAIN_EOF
+# ${FIRST_DOMAIN^}
+
+Persistent context for ${FIRST_DOMAIN}. Add files here as knowledge accumulates.
+
+**Created:** $(date +%Y-%m-%d)
+DOMAIN_EOF
+  echo -e "  ${GREEN}✓${NC} Knowledge domain created: ${FIRST_DOMAIN}"
 
   # Update integrations/README.md to only list installed integrations
   # (keeping the full README but users will see only their chosen ones in the directory)
