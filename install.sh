@@ -291,11 +291,39 @@ init() {
 
   # Step 9: Private GitHub repo
   CREATE_REPO="no"
-  if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
-    echo -e "${BOLD}Want to back up your Contextium to GitHub?${NC}"
-    echo -e "${DIM}Your context compounds over time — losing it means starting over.${NC}"
-    echo -e "${DIM}A private GitHub repo keeps it backed up and synced across machines.${NC}"
-    CREATE_REPO=$(gum choose "Yes — create private repo and push" "No — keep it local for now")
+  echo -e "${BOLD}Want to back up your Contextium to GitHub?${NC}"
+  echo -e "${DIM}Your context compounds over time — losing it means starting over.${NC}"
+  echo -e "${DIM}A private GitHub repo keeps it backed up and synced across machines.${NC}"
+  CREATE_REPO=$(gum choose "Yes — create private repo and push" "No — keep it local for now")
+
+  if [[ "$CREATE_REPO" == "Yes"* ]]; then
+    # Ensure gh is installed
+    if ! command -v gh &>/dev/null; then
+      echo -e "${BLUE}Installing GitHub CLI...${NC}"
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        brew install gh 2>/dev/null || { echo -e "${YELLOW}Could not install gh. Install manually: https://cli.github.com${NC}"; CREATE_REPO="no"; }
+      elif command -v apt-get &>/dev/null; then
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+        sudo apt-get update -qq -o Dir::Etc::sourcelist="sources.list.d/github-cli.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" && sudo apt-get install -y -qq gh >/dev/null 2>&1
+        echo -e "  ${GREEN}✓${NC} GitHub CLI installed"
+      else
+        echo -e "${YELLOW}Could not install gh. Install manually: https://cli.github.com${NC}"
+        CREATE_REPO="no"
+      fi
+    fi
+
+    # Ensure gh is authenticated
+    if [[ "$CREATE_REPO" == "Yes"* ]] && command -v gh &>/dev/null; then
+      if ! gh auth status &>/dev/null 2>&1; then
+        echo ""
+        echo -e "${BLUE}Let's connect to GitHub. A browser window will open for you to sign in.${NC}"
+        gh auth login --web --git-protocol https 2>&1 || {
+          echo -e "${YELLOW}GitHub auth failed. You can set this up later with: gh auth login${NC}"
+          CREATE_REPO="no"
+        }
+      fi
+    fi
   fi
   echo ""
 
