@@ -317,9 +317,27 @@ init() {
     if [[ "$CREATE_REPO" == "Yes"* ]] && command -v gh &>/dev/null; then
       if ! gh auth status &>/dev/null 2>&1; then
         echo ""
-        echo -e "${BLUE}Let's connect to GitHub. A browser window will open for you to sign in.${NC}"
-        gh auth login --web --git-protocol https 2>&1 || {
-          echo -e "${YELLOW}GitHub auth failed. You can set this up later with: gh auth login${NC}"
+        echo -e "${BLUE}┌─────────────────────────────────────────┐${NC}"
+        echo -e "${BLUE}│  ${BOLD}Let's connect to GitHub${NC}${BLUE}                │${NC}"
+        echo -e "${BLUE}│                                         │${NC}"
+        echo -e "${BLUE}│  ${NC}1. A code will appear below${BLUE}             │${NC}"
+        echo -e "${BLUE}│  ${NC}2. Go to: ${BOLD}github.com/login/device${NC}${BLUE}     │${NC}"
+        echo -e "${BLUE}│  ${NC}3. Paste the code and authorize${BLUE}         │${NC}"
+        echo -e "${BLUE}└─────────────────────────────────────────┘${NC}"
+        echo ""
+
+        # Generate QR code for the device URL if qrencode is available
+        if command -v qrencode &>/dev/null; then
+          qrencode -t UTF8 -m 2 "https://github.com/login/device" 2>/dev/null
+          echo -e "${DIM}  Or scan the QR code above on your phone.${NC}"
+          echo ""
+        fi
+
+        gh auth login --git-protocol https --web 2>&1 || {
+          echo ""
+          echo -e "${YELLOW}GitHub auth didn't complete. No worries — you can do this later:${NC}"
+          echo -e "  ${BOLD}gh auth login${NC}"
+          echo -e "  ${BOLD}gh repo create $(basename "$(pwd)") --private --source=. --push${NC}"
           CREATE_REPO="no"
         }
       fi
