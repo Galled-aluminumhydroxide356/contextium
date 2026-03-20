@@ -350,14 +350,12 @@ init() {
   echo -e "${BLUE}Setting up your Contextium...${NC}"
   echo ""
 
-  # Clone template
-  git clone --depth 1 "$REPO" "$DIR_NAME" 2>/dev/null
+  # Clone template (keep history for upstream merges to work)
+  git clone "$REPO" "$DIR_NAME" 2>/dev/null
   cd "$DIR_NAME"
 
-  # Reinitialize git
-  rm -rf .git
-  git init -q
-  git branch -m main 2>/dev/null || true
+  # Rename origin to upstream (framework source for future updates)
+  git remote rename origin upstream
 
   # Copy agent config to the correct filename for the selected agent
   # The content is the same core instruction set — context router, rules, structure —
@@ -579,8 +577,7 @@ open('integrations/README.md', 'w').writelines(out)
   git add -A
   git commit -q -m "Initial Contextium setup for ${USER_NAME} (${VERSION})"
 
-  # Add upstream for future updates
-  git remote add upstream "$REPO"
+  # Upstream remote already set from clone rename
   git config merge.ours.driver true
 
   # Create private GitHub repo if requested
@@ -712,8 +709,8 @@ open('integrations/README.md', 'w').writelines(out)
 update() {
   banner
 
-  # Verify we're in a Contextium repo
-  if [ ! -f "CLAUDE.md" ] || ! grep -q "Contextium" "CLAUDE.md" 2>/dev/null; then
+  # Verify we're in a Contextium repo (check for any known instruction file or the preferences dir)
+  if [ ! -d "preferences" ] || [ ! -d "knowledge" ]; then
     echo -e "${YELLOW}This doesn't look like a Contextium repo.${NC}"
     echo "Run this command from inside your Contextium directory."
     exit 1
@@ -793,13 +790,11 @@ test_install() {
   echo ""
 
   # Clone template
-  git clone --depth 1 "$REPO" "$DIR_NAME" 2>/dev/null
+  git clone "$REPO" "$DIR_NAME" 2>/dev/null
   cd "$DIR_NAME"
 
-  # Reinitialize git
-  rm -rf .git
-  git init -q
-  git branch -m main 2>/dev/null || true
+  # Rename origin to upstream
+  git remote rename origin upstream
 
   # Copy agent config
   INSTRUCTION_SRC="agent-configs/claude/CLAUDE.md"
