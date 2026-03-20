@@ -85,7 +85,7 @@ init() {
 
   # Step 1: Name
   echo -e "${BOLD}What's your name?${NC}"
-  echo -e "${DIM}Your AI will use this to personalize your experience and create your profile.${NC}"
+  echo -e "${DIM}So your AI recognizes you across sessions and never has to ask again.${NC}"
   USER_NAME=$(gum input --placeholder "Your name" --width 40)
   if [ -z "$USER_NAME" ]; then
     echo -e "${YELLOW}Name is required.${NC}"
@@ -95,7 +95,7 @@ init() {
 
   # Step 2: Directory
   echo -e "${BOLD}Where should we set up your Contextium?${NC}"
-  echo -e "${DIM}This creates a new folder in your current directory.${NC}"
+  echo -e "${DIM}Everything lives in one folder — your AI reads and writes here across sessions.${NC}"
   DIR_NAME=$(gum input --placeholder "contextium" --value "contextium" --width 40)
   DIR_NAME="${DIR_NAME:-contextium}"
   if [ -d "$DIR_NAME" ]; then
@@ -106,8 +106,8 @@ init() {
 
   # Step 3: AI Agent
   echo -e "${BOLD}Which AI coding agent do you use?${NC}"
-  echo -e "${DIM}Contextium will install the right instruction file for your agent.${NC}"
-  echo -e "${DIM}You can always switch later by copying from agent-configs/.${NC}"
+  echo -e "${DIM}Different agents need different instruction files. We'll configure yours${NC}"
+  echo -e "${DIM}so it knows how to navigate your Contextium from the first session.${NC}"
   AI_AGENT=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[x] " \
     "Claude Code (recommended)" \
     "Cursor" \
@@ -116,9 +116,10 @@ init() {
   echo ""
 
   # Step 4: Integrations
-  echo -e "${BOLD}Which tools and services do you want to connect?${NC}"
-  echo -e "${DIM}Contextium includes setup guides for each one. Pick only what you use —${NC}"
-  echo -e "${DIM}you can always add more later. (Space to toggle, Enter to confirm)${NC}"
+  echo -e "${BOLD}Which tools and services do you already use?${NC}"
+  echo -e "${DIM}Your AI can connect to these to pull data, trigger actions, and automate${NC}"
+  echo -e "${DIM}workflows. We'll only install what you pick — keeps your repo clean.${NC}"
+  echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
   echo ""
 
   INTEGRATIONS=$(gum choose --no-limit --height 20 --cursor-prefix "[ ] " --selected-prefix "[x] " \
@@ -154,8 +155,8 @@ init() {
   CREATE_REPO="no"
   if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
     echo -e "${BOLD}Want to back up your Contextium to GitHub?${NC}"
-    echo -e "${DIM}This creates a private repo so your context is version-controlled and backed up.${NC}"
-    echo -e "${DIM}Only you can see it — it's private by default.${NC}"
+    echo -e "${DIM}Your context compounds over time — losing it means starting over.${NC}"
+    echo -e "${DIM}A private GitHub repo keeps it backed up and synced across machines.${NC}"
     CREATE_REPO=$(gum choose "Yes — create private repo and push" "No — keep it local for now")
   fi
   echo ""
