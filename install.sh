@@ -110,8 +110,14 @@ init() {
   echo -e "${DIM}so it knows how to navigate your Contextium from the first session.${NC}"
   AI_AGENT=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[x] " \
     "Claude Code (recommended)" \
+    "Codex CLI" \
     "Cursor" \
-    "Codex CLI")
+    "Windsurf" \
+    "Cline" \
+    "Aider" \
+    "Continue" \
+    "GitHub Copilot" \
+    "Other")
   echo -e "${DIM}Selected: ${AI_AGENT}${NC}"
   echo ""
 
@@ -122,32 +128,64 @@ init() {
   echo -e "${DIM}(Space to toggle, Enter to confirm)${NC}"
   echo ""
 
+  # Build integration list dynamically — exclude the primary agent they already picked
+  INTEGRATION_ITEMS=()
+  PRESELECTED=()
+
+  # AI delegation tools (skip if already primary agent)
+  if [[ "$AI_AGENT" != "Codex"* ]]; then
+    INTEGRATION_ITEMS+=("Codex (delegate bulk edits to a second AI agent)")
+    PRESELECTED+=("--selected=Codex (delegate bulk edits to a second AI agent)")
+  fi
+  INTEGRATION_ITEMS+=("Gemini (delegate web research to Google's AI)")
+  PRESELECTED+=("--selected=Gemini (delegate web research to Google's AI)")
+  INTEGRATION_ITEMS+=("Browse (browser automation for web scraping and testing)")
+
+  # Productivity
+  INTEGRATION_ITEMS+=(
+    "1Password (store API keys and credentials securely)"
+    "Google Workspace (Gmail, Calendar, Drive, Sheets)"
+    "Todoist (task management and to-do tracking)"
+  )
+
+  # Automation
+  INTEGRATION_ITEMS+=(
+    "Windmill (self-hosted workflow automation — like Zapier but yours)"
+    "n8n (self-hosted workflow automation — alternative to Windmill)"
+  )
+
+  # Infrastructure
+  INTEGRATION_ITEMS+=(
+    "Cloudflare (DNS, web hosting, serverless functions)"
+    "TrueNAS (NAS and Docker container management via SSH)"
+    "Garage (S3-compatible object storage for backups)"
+  )
+
+  # Smart Home
+  INTEGRATION_ITEMS+=("Home Assistant (smart home control and automation)")
+
+  # Business
+  INTEGRATION_ITEMS+=(
+    "Autotask (PSA/ticketing for managed service providers)"
+    "NinjaOne (device inventory and remote monitoring)"
+    "QuickBooks Online (business accounting and financial reports)"
+    "Monarch (personal finance tracking and budgeting)"
+    "Strety (EOS platform — scorecards, rocks, meeting management)"
+    "Hudu (IT documentation platform)"
+    "MSPBots (MSP-specific analytics and KPI dashboards)"
+  )
+
+  # Interfaces
+  INTEGRATION_ITEMS+=(
+    "TRMNL (e-ink display dashboard for at-a-glance info)"
+    "Remote Control (access your AI from your phone)"
+    "HAPI (voice interface — talk to your AI)"
+    "VS Code (remote development tunnel)"
+  )
+
   INTEGRATIONS=$(gum choose --no-limit --height 20 --cursor-prefix "[ ] " --selected-prefix "[x] " \
-    --selected="Gemini (AI research — lets your agent delegate web research)" \
-    --selected="Codex (AI bulk editing — lets your agent delegate large code changes)" \
-    "1Password (store API keys and credentials securely)" \
-    "Google Workspace (Gmail, Calendar, Drive, Sheets)" \
-    "Todoist (task management and to-do tracking)" \
-    "Gemini (AI research — lets your agent delegate web research)" \
-    "Codex (AI bulk editing — lets your agent delegate large code changes)" \
-    "Browse (browser automation for web scraping and testing)" \
-    "Windmill (self-hosted workflow automation — like Zapier but yours)" \
-    "n8n (self-hosted workflow automation — alternative to Windmill)" \
-    "Cloudflare (DNS, web hosting, serverless functions)" \
-    "TrueNAS (NAS and Docker container management via SSH)" \
-    "Home Assistant (smart home control and automation)" \
-    "Autotask (PSA/ticketing for managed service providers)" \
-    "NinjaOne (device inventory and remote monitoring)" \
-    "QuickBooks Online (business accounting and financial reports)" \
-    "Monarch (personal finance tracking and budgeting)" \
-    "Strety (EOS platform — scorecards, rocks, meeting management)" \
-    "Hudu (IT documentation platform)" \
-    "MSPBots (MSP-specific analytics and KPI dashboards)" \
-    "Garage (S3-compatible object storage for backups)" \
-    "TRMNL (e-ink display dashboard for at-a-glance info)" \
-    "Remote Control (access your AI from your phone)" \
-    "HAPI (voice interface — talk to your AI)" \
-    "VS Code (remote development tunnel)" \
+    "${PRESELECTED[@]}" \
+    "${INTEGRATION_ITEMS[@]}" \
     || echo "")
   echo ""
 
@@ -215,6 +253,7 @@ init() {
   git branch -m main 2>/dev/null || true
 
   # Copy agent config based on selection
+  # Claude Code has a full config; others use Claude's as a base since most read CLAUDE.md
   case "$AI_AGENT" in
     "Claude Code"*)
       cp agent-configs/claude/CLAUDE.md ./CLAUDE.md
@@ -222,17 +261,25 @@ init() {
       cp agent-configs/claude/GEMINI.md ./GEMINI.md 2>/dev/null || true
       echo -e "  ${GREEN}✓${NC} Claude Code config installed"
       ;;
-    "Cursor"*)
-      if [ -f agent-configs/cursor/.cursorrules ]; then
-        cp agent-configs/cursor/.cursorrules ./.cursorrules
-      fi
-      echo -e "  ${GREEN}✓${NC} Cursor config installed (basic — community contributions welcome)"
-      ;;
     "Codex"*)
+      cp agent-configs/claude/CLAUDE.md ./CLAUDE.md 2>/dev/null || true
       if [ -f agent-configs/codex/AGENTS.md ]; then
         cp agent-configs/codex/AGENTS.md ./AGENTS.md
       fi
-      echo -e "  ${GREEN}✓${NC} Codex config installed (basic — community contributions welcome)"
+      echo -e "  ${GREEN}✓${NC} Codex config installed"
+      ;;
+    "Cursor"*)
+      cp agent-configs/claude/CLAUDE.md ./CLAUDE.md 2>/dev/null || true
+      if [ -f agent-configs/cursor/.cursorrules ]; then
+        cp agent-configs/cursor/.cursorrules ./.cursorrules
+      fi
+      echo -e "  ${GREEN}✓${NC} Cursor config installed"
+      ;;
+    "Cline"*|"Aider"*|"Continue"*|"Windsurf"*|"GitHub Copilot"*|"Other"*)
+      # These agents generally read CLAUDE.md or similar instruction files
+      cp agent-configs/claude/CLAUDE.md ./CLAUDE.md 2>/dev/null || true
+      echo -e "  ${GREEN}✓${NC} Config installed (using CLAUDE.md — most agents read this)"
+      echo -e "  ${DIM}Community-contributed configs for ${AI_AGENT} welcome! See CONTRIBUTING.md${NC}"
       ;;
   esac
 
@@ -241,8 +288,8 @@ init() {
     ["1Password (store API keys and credentials securely)"]="1password"
     ["Google Workspace (Gmail, Calendar, Drive, Sheets)"]="google-workspace google-auth"
     ["Todoist (task management and to-do tracking)"]="todoist"
-    ["Gemini (AI research — lets your agent delegate web research)"]="gemini"
-    ["Codex (AI bulk editing — lets your agent delegate large code changes)"]="codex"
+    ["Gemini (delegate web research to Google's AI)"]="gemini"
+    ["Codex (delegate bulk edits to a second AI agent)"]="codex"
     ["Browse (browser automation for web scraping and testing)"]="browse"
     ["Windmill (self-hosted workflow automation — like Zapier but yours)"]="windmill"
     ["n8n (self-hosted workflow automation — alternative to Windmill)"]="n8n"
@@ -396,22 +443,13 @@ DOMAIN_EOF
     "Claude Code"*)
       AGENT_CMD="claude"
       if ! command -v claude &>/dev/null; then
-        echo -e "  ${DIM}Installing Claude Code CLI...${NC}"
+        echo -e "  ${DIM}Installing Claude Code...${NC}"
         npm install -g @anthropic-ai/claude-code 2>/dev/null && \
           echo -e "  ${GREEN}✓${NC} Claude Code installed" || \
-          echo -e "  ${YELLOW}Could not auto-install. Install manually: npm install -g @anthropic-ai/claude-code${NC}"
+          echo -e "  ${YELLOW}Could not auto-install. Run: npm install -g @anthropic-ai/claude-code${NC}"
       else
         echo -e "  ${GREEN}✓${NC} Claude Code already installed"
       fi
-      ;;
-    "Cursor"*)
-      AGENT_CMD="cursor"
-      if ! command -v cursor &>/dev/null; then
-        echo -e "  ${YELLOW}Cursor is a desktop app — download from https://cursor.com if you haven't already.${NC}"
-      else
-        echo -e "  ${GREEN}✓${NC} Cursor already installed"
-      fi
-      AGENT_CMD="cursor ."
       ;;
     "Codex"*)
       AGENT_CMD="codex"
@@ -419,10 +457,56 @@ DOMAIN_EOF
         echo -e "  ${DIM}Installing Codex CLI...${NC}"
         npm install -g @openai/codex 2>/dev/null && \
           echo -e "  ${GREEN}✓${NC} Codex installed" || \
-          echo -e "  ${YELLOW}Could not auto-install. Install manually: npm install -g @openai/codex${NC}"
+          echo -e "  ${YELLOW}Could not auto-install. Run: npm install -g @openai/codex${NC}"
       else
         echo -e "  ${GREEN}✓${NC} Codex already installed"
       fi
+      ;;
+    "Cursor"*)
+      AGENT_CMD="cursor ."
+      if ! command -v cursor &>/dev/null; then
+        echo -e "  ${YELLOW}Cursor is a desktop app — download from https://cursor.com${NC}"
+      else
+        echo -e "  ${GREEN}✓${NC} Cursor already installed"
+      fi
+      ;;
+    "Windsurf"*)
+      AGENT_CMD="windsurf ."
+      if ! command -v windsurf &>/dev/null; then
+        echo -e "  ${YELLOW}Windsurf is a desktop app — download from https://codeium.com/windsurf${NC}"
+      else
+        echo -e "  ${GREEN}✓${NC} Windsurf already installed"
+      fi
+      ;;
+    "Cline"*)
+      AGENT_CMD="code ."
+      echo -e "  ${DIM}Cline is a VS Code extension — install it from the VS Code marketplace.${NC}"
+      echo -e "  ${GREEN}✓${NC} Opening VS Code in your Contextium directory"
+      ;;
+    "Aider"*)
+      AGENT_CMD="aider"
+      if ! command -v aider &>/dev/null; then
+        echo -e "  ${DIM}Installing Aider...${NC}"
+        pip install aider-chat 2>/dev/null && \
+          echo -e "  ${GREEN}✓${NC} Aider installed" || \
+          echo -e "  ${YELLOW}Could not auto-install. Run: pip install aider-chat${NC}"
+      else
+        echo -e "  ${GREEN}✓${NC} Aider already installed"
+      fi
+      ;;
+    "Continue"*)
+      AGENT_CMD="code ."
+      echo -e "  ${DIM}Continue is a VS Code extension — install it from the VS Code marketplace.${NC}"
+      echo -e "  ${GREEN}✓${NC} Opening VS Code in your Contextium directory"
+      ;;
+    "GitHub Copilot"*)
+      AGENT_CMD="code ."
+      echo -e "  ${DIM}GitHub Copilot is a VS Code extension — install it from the VS Code marketplace.${NC}"
+      echo -e "  ${GREEN}✓${NC} Opening VS Code in your Contextium directory"
+      ;;
+    "Other"*)
+      AGENT_CMD=""
+      echo -e "  ${DIM}Your CLAUDE.md instruction file is ready — most AI agents will read it.${NC}"
       ;;
   esac
 
