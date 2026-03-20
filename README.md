@@ -48,7 +48,7 @@ The more you use it, the richer the context becomes. Your AI learns your goals, 
 
 ```bash
 # Install Contextium
-curl -sSL https://raw.githubusercontent.com/Ashkaan/contextium/main/install.sh | bash
+curl -sSL contextium.ai/install | bash
 cd contextium
 
 # Start your AI agent and say:
