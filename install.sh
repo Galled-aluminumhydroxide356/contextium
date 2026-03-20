@@ -351,8 +351,11 @@ init() {
   echo ""
 
   # Clone template (keep history for upstream merges to work)
-  git clone "$REPO" "$DIR_NAME" 2>/dev/null
-  cd "$DIR_NAME"
+  if ! git clone "$REPO" "$DIR_NAME" 2>&1 | tail -1; then
+    echo -e "${YELLOW}Failed to clone the Contextium template. Check your internet connection.${NC}"
+    exit 1
+  fi
+  cd "$DIR_NAME" || { echo -e "${YELLOW}Failed to enter directory '$DIR_NAME'.${NC}"; exit 1; }
 
   # Rename origin to upstream (framework source for future updates)
   git remote rename origin upstream
